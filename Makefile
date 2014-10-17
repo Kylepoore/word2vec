@@ -18,3 +18,4 @@ compute-accuracy : compute-accuracy.c
 
 clean:
 	rm -rf word2vec word2phrase distance word-analogy compute-accuracy
+
