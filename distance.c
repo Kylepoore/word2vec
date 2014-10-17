@@ -43,7 +43,9 @@ int main(int argc, char **argv) {
   fscanf(f, "%lld", &words);
   fscanf(f, "%lld", &size);
   vocab = (char *)malloc((long long)words * max_w * sizeof(char));
-  for (a = 0; a < N; a++) bestw[a] = (char *)malloc(max_size * sizeof(char));
+  for (a = 0; a < N; a++) {
+    bestw[a] = (char *)malloc(max_size * sizeof(char));
+  }
   M = (float *)malloc((long long)words * (long long)size * sizeof(float));
   if (M == NULL) {
     printf("Cannot allocate memory: %lld MB    %lld  %lld\n", (long long)words * size * sizeof(float) / 1048576, words, size);
@@ -57,16 +59,26 @@ int main(int argc, char **argv) {
       if ((a < max_w) && (vocab[b * max_w + a] != '\n')) a++;
     }
     vocab[b * max_w + a] = 0;
-    for (a = 0; a < size; a++) fread(&M[a + b * size], sizeof(float), 1, f);
+    for (a = 0; a < size; a++) {
+      fread(&M[a + b * size], sizeof(float), 1, f);
+    }
     len = 0;
-    for (a = 0; a < size; a++) len += M[a + b * size] * M[a + b * size];
+    for (a = 0; a < size; a++) {
+      len += M[a + b * size] * M[a + b * size];
+    }
     len = sqrt(len);
-    for (a = 0; a < size; a++) M[a + b * size] /= len;
+    for (a = 0; a < size; a++) {
+      M[a + b * size] /= len;
+    }
   }
   fclose(f);
   while (1) {
-    for (a = 0; a < N; a++) bestd[a] = 0;
-    for (a = 0; a < N; a++) bestw[a][0] = 0;
+    for (a = 0; a < N; a++) {
+      bestd[a] = 0;
+    }
+    for (a = 0; a < N; a++) {
+      bestw[a][0] = 0;
+    }
     printf("Enter word or sentence (EXIT to break): ");
     a = 0;
     while (1) {
@@ -95,7 +107,9 @@ int main(int argc, char **argv) {
     }
     cn++;
     for (a = 0; a < cn; a++) {
-      for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st[a])) break;
+      for (b = 0; b < words; b++) {
+        if (!strcmp(&vocab[b * max_w], st[a])) break;
+      }
       if (b == words) b = -1;
       bi[a] = b;
       printf("\nWord: %s  Position in vocabulary: %lld\n", st[a], bi[a]);
@@ -106,23 +120,39 @@ int main(int argc, char **argv) {
     }
     if (b == -1) continue;
     printf("\n                                              Word       Cosine distance\n------------------------------------------------------------------------\n");
-    for (a = 0; a < size; a++) vec[a] = 0;
+    for (a = 0; a < size; a++) {
+      vec[a] = 0;
+    }
     for (b = 0; b < cn; b++) {
       if (bi[b] == -1) continue;
-      for (a = 0; a < size; a++) vec[a] += M[a + bi[b] * size];
+      for (a = 0; a < size; a++) {
+        vec[a] += M[a + bi[b] * size];
+      }
     }
     len = 0;
-    for (a = 0; a < size; a++) len += vec[a] * vec[a];
+    for (a = 0; a < size; a++) {
+      len += vec[a] * vec[a];
+    }
     len = sqrt(len);
-    for (a = 0; a < size; a++) vec[a] /= len;
-    for (a = 0; a < N; a++) bestd[a] = -1;
-    for (a = 0; a < N; a++) bestw[a][0] = 0;
+    for (a = 0; a < size; a++) {
+      vec[a] /= len;
+    }
+    for (a = 0; a < N; a++) {
+      bestd[a] = -1;
+    }
+    for (a = 0; a < N; a++) {
+      bestw[a][0] = 0;
+    }
     for (c = 0; c < words; c++) {
       a = 0;
-      for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
+      for (b = 0; b < cn; b++) {
+        if (bi[b] == c) a = 1;
+      }
       if (a == 1) continue;
       dist = 0;
-      for (a = 0; a < size; a++) dist += vec[a] * M[a + c * size];
+      for (a = 0; a < size; a++) {
+        dist += vec[a] * M[a + c * size];
+      }
       for (a = 0; a < N; a++) {
         if (dist > bestd[a]) {
           for (d = N - 1; d > a; d--) {
@@ -135,7 +165,9 @@ int main(int argc, char **argv) {
         }
       }
     }
-    for (a = 0; a < N; a++) printf("%50s\t\t%f\n", bestw[a], bestd[a]);
+    for (a = 0; a < N; a++) {
+      printf("%50s\t\t%f\n", bestw[a], bestd[a]);
+    }
   }
   return 0;
 }

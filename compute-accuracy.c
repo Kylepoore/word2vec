@@ -37,14 +37,21 @@ int main(int argc, char **argv)
     return 0;
   }
   strcpy(file_name, argv[1]);
-  if (argc > 2) threshold = atoi(argv[2]);
+  if (argc > 2) {
+    threshold = atoi(argv[2]);
+  }
   f = fopen(file_name, "rb");
   if (f == NULL) {
     printf("Input file not found\n");
     return -1;
   }
   fscanf(f, "%lld", &words);
-  if (threshold) if (words > threshold) words = threshold;
+  if (threshold) {
+    if (words > threshold)
+    {
+      words = threshold;
+    }
+  }
   fscanf(f, "%lld", &size);
   vocab = (char *)malloc(words * max_w * sizeof(char));
   M = (float *)malloc(words * size * sizeof(float));
@@ -60,25 +67,44 @@ int main(int argc, char **argv)
       if ((a < max_w) && (vocab[b * max_w + a] != '\n')) a++;
     }
     vocab[b * max_w + a] = 0;
-    for (a = 0; a < max_w; a++) vocab[b * max_w + a] = toupper(vocab[b * max_w + a]);
-    for (a = 0; a < size; a++) fread(&M[a + b * size], sizeof(float), 1, f);
+    for (a = 0; a < max_w; a++) {
+      vocab[b * max_w + a] = toupper(vocab[b * max_w + a]);
+    }
+    for (a = 0; a < size; a++) {
+      fread(&M[a + b * size], sizeof(float), 1, f);
+    }
     len = 0;
-    for (a = 0; a < size; a++) len += M[a + b * size] * M[a + b * size];
+    for (a = 0; a < size; a++) {
+      len += M[a + b * size] * M[a + b * size];
+    }
     len = sqrt(len);
-    for (a = 0; a < size; a++) M[a + b * size] /= len;
+    for (a = 0; a < size; a++) {
+      M[a + b * size] /= len;
+    }
   }
   fclose(f);
   TCN = 0;
   while (1) {
-    for (a = 0; a < N; a++) bestd[a] = 0;
-    for (a = 0; a < N; a++) bestw[a][0] = 0;
+    for (a = 0; a < N; a++) {
+      bestd[a] = 0;
+    }
+    for (a = 0; a < N; a++) {
+      bestw[a][0] = 0;
+    }
     scanf("%s", st1);
-    for (a = 0; a < strlen(st1); a++) st1[a] = toupper(st1[a]);
+    for (a = 0; a < strlen(st1); a++) {
+      st1[a] = toupper(st1[a]);
+    }
     if ((!strcmp(st1, ":")) || (!strcmp(st1, "EXIT")) || feof(stdin)) {
-      if (TCN == 0) TCN = 1;
+      if (TCN == 0) {
+        TCN = 1;
+      }
       if (QID != 0) {
         printf("ACCURACY TOP1: %.2f %%  (%d / %d)\n", CCN / (float)TCN * 100, CCN, TCN);
-        printf("Total accuracy: %.2f %%   Semantic accuracy: %.2f %%   Syntactic accuracy: %.2f %% \n", CACN / (float)TACN * 100, SEAC / (float)SECN * 100, SYAC / (float)SYCN * 100);
+        printf("Total accuracy: %.2f %%   Semantic accuracy: %.2f %%   Syntactic accuracy: %.2f %% \n", 
+               CACN / (float)TACN * 100, 
+               SEAC / (float)SECN * 100, 
+               SYAC / (float)SYCN * 100);
       }
       QID++;
       scanf("%s", st1);
@@ -90,33 +116,55 @@ int main(int argc, char **argv)
     }
     if (!strcmp(st1, "EXIT")) break;
     scanf("%s", st2);
-    for (a = 0; a < strlen(st2); a++) st2[a] = toupper(st2[a]);
+    for (a = 0; a < strlen(st2); a++) {
+      st2[a] = toupper(st2[a]);
+    }
     scanf("%s", st3);
-    for (a = 0; a<strlen(st3); a++) st3[a] = toupper(st3[a]);
+    for (a = 0; a<strlen(st3); a++) {
+      st3[a] = toupper(st3[a]);
+    }
     scanf("%s", st4);
-    for (a = 0; a < strlen(st4); a++) st4[a] = toupper(st4[a]);
-    for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st1)) break;
+    for (a = 0; a < strlen(st4); a++) {
+      st4[a] = toupper(st4[a]);
+    }
+    for (b = 0; b < words; b++) {
+      if (!strcmp(&vocab[b * max_w], st1)) break;
+    }
     b1 = b;
-    for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st2)) break;
+    for (b = 0; b < words; b++) {
+      if (!strcmp(&vocab[b * max_w], st2)) break;
+    }
     b2 = b;
-    for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st3)) break;
+    for (b = 0; b < words; b++) {
+      if (!strcmp(&vocab[b * max_w], st3)) break;
+    }
     b3 = b;
-    for (a = 0; a < N; a++) bestd[a] = 0;
-    for (a = 0; a < N; a++) bestw[a][0] = 0;
+    for (a = 0; a < N; a++) {
+      bestd[a] = 0;
+    }
+    for (a = 0; a < N; a++) {
+      bestw[a][0] = 0;
+    }
     TQ++;
     if (b1 == words) continue;
     if (b2 == words) continue;
     if (b3 == words) continue;
-    for (b = 0; b < words; b++) if (!strcmp(&vocab[b * max_w], st4)) break;
+    for (b = 0; b < words; b++) {
+      if (!strcmp(&vocab[b * max_w], st4)) break;
+    }
     if (b == words) continue;
-    for (a = 0; a < size; a++) vec[a] = (M[a + b2 * size] - M[a + b1 * size]) + M[a + b3 * size];
+    for (a = 0; a < size; a++) {
+      vec[a] = (M[a + b2 * size] - M[a + b1 * size]) + M[a + b3 * size];
+    }
     TQS++;
     for (c = 0; c < words; c++) {
       if (c == b1) continue;
       if (c == b2) continue;
       if (c == b3) continue;
       dist = 0;
-      for (a = 0; a < size; a++) dist += vec[a] * M[a + c * size];
+      for (a = 0; a < size; a++) {
+        dist += vec[a] * M[a + c * size];
+      }
       for (a = 0; a < N; a++) {
         if (dist > bestd[a]) {
           for (d = N - 1; d > a; d--) {
@@ -132,9 +180,17 @@ int main(int argc, char **argv)
     if (!strcmp(st4, bestw[0])) {
       CCN++;
       CACN++;
-      if (QID <= 5) SEAC++; else SYAC++;
+      if (QID <= 5) {
+        SEAC++; 
+      } else {
+        SYAC++;
+      }
     }
-    if (QID <= 5) SECN++; else SYCN++;
+    if (QID <= 5) {
+      SECN++; 
+    } else {
+      SYCN++;
+    }
     TCN++;
     TACN++;
   }
