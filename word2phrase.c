@@ -22,8 +22,6 @@
 
 const int vocab_hash_size = 500000000; // Maximum 500M entries in the vocabulary
 
-typedef float real;                    // Precision of float numbers
-
 struct vocab_word {
   long long cn;
   char *word;
@@ -34,7 +32,7 @@ struct vocab_word *vocab;
 int debug_mode = 2, min_count = 5, *vocab_hash, min_reduce = 1;
 long long vocab_max_size = 10000, vocab_size = 0;
 long long train_words = 0;
-real threshold = 100;
+float threshold = 100;
 
 unsigned long long next_random = 1;
 
@@ -206,7 +204,7 @@ void LearnVocabFromTrainFile() {
 void TrainModel() {
   long long pa = 0, pb = 0, pab = 0, oov, i, li = -1, cn = 0;
   char word[MAX_STRING], last_word[MAX_STRING], bigram_word[MAX_STRING * 2];
-  real score;
+  float score;
   FILE *fo, *fin;
   printf("Starting training using file %s\n", train_file);
   LearnVocabFromTrainFile();
@@ -237,7 +235,7 @@ void TrainModel() {
     if (i == -1) oov = 1; else pab = vocab[i].cn;
     if (pa < min_count) oov = 1;
     if (pb < min_count) oov = 1;
-    if (oov) score = 0; else score = (pab - min_count) / (real)pa / (real)pb * (real)train_words;
+    if (oov) score = 0; else score = (pab - min_count) / (float)pa / (float)pb * (float)train_words;
     if (score > threshold) {
       fprintf(fo, "_%s", word);
       pb = 0;
